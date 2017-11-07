@@ -1,0 +1,7 @@
+---
+# defaults file for osp-director
+user: stack
+user_pass:
+sudoer_perm: 0440
+req_rpm: python-tripleoclient,git,openstack-utils
+
