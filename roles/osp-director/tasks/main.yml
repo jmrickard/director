@@ -1,39 +1,24 @@
 ---
-# tasks file for osp-director
+  - name: install the repos
+    - include_role:
+        name: repos
 
-  - name: create all the repo, install all the needed rpms and create the user "{{ stack_user }}"
-    block:
-     - yum_repository:
-         name: "{{ item.name }}"
-         baseurl: "{{ item.baseurl }}"
-         enabled: yes
-         gpgcheck: yes
-         gpgkey: "{{ item.key }}"
-         gpgurl: "{{ item.gpgurl }}"
-       with_items:
-         - { name: 'rhel-7-server-extras-rpms', baseurl: "{{ extra_repo }}", gpgkey: "{{ extras_key }}", gpgurl: "{{ extra_gpg }}" }
-         - { name: 'rhel-7-server-rpms', baseurl: "{{ server_rpms }}", gpgkey: "{{ server_key }}", gpgurl: "{{ server_gpg }}" }
-         - { name: 'rhel-7-sever-openstack-11-rpms', baseurl: "{{ open_repo }}", gpgkey: "{{ open_key }}", gpgurl: "{{ open_gpg }}"
-         - { name: 'rhel-7-server-openstack-11-director-rpms', baseurl: "{{ dir_repo }}", gpgkey: "{{ dir_key }}", gpgurl: "{{ dir_gpg }}"
-         - { name: 'rhel-7-server-openstack-11-tools-rpms', baseurl: "{{ tools_repo }}", gpgkey: "{{ tools_key }}", gpgurl: "{{ tools_gpg }}" }
-         - { name: 'rhel-7-server-rh-common-rpms', baseurl: "{{ rh_repo }}", gpgkey: "{{ rh_key }}", gpgurl: "{{ rh_gpg }}" }
-     - yum:
-         name: "{{ req_rpm }}"
-         state: latest
+  - name: install all the required rpms
+    yum:
+      name: "{{ req_rpm }}"
+      state: latest
 
-     - user:
-         name: "{{ stack_user }}"
-         group: "{{ stack_group }}"
-         password: "{{ stack_passwd }}" #can use vault
+  - name: create the user stack
+    user:
+      name: "{{ stack_user }}"
+      group: "{{ stack_group }}"
+      password: "{{ stack_passwd }}" #can use vault
 
-     - template:
-         src: stack.j2
-         dest: /etc/sudoers.d/
-
- 
-     - template:
-         src: undercloud.conf.j2
-         dest: /home/stack/
+  - name: create the stack file for sudoers
+    template:
+      src: undercloud.conf.j2
+      dest: /home/stack/undercloud.conf
+      mode: "{{ sudoer_perm }}"
 
 
 
