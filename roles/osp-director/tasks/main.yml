@@ -40,8 +40,12 @@
       src: undercloud.conf.j2
       dest: /home/stack/undercloud.conf
       mode: "{{ sudoer_perm }}"
+      group: "{{ stack_group }}"
+      owner: "{{ stack_user }}"
 
   - name: install the undercloud
+    become: yes
+    become_user: stack
     shell: openstack undercloud install
     args:
       chdir: /home/stack
