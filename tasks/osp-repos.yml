@@ -1,0 +1,32 @@
+---
+# tasks file for osp-director
+- name: Add Red Hat openstack rpms
+  yum_repository:
+    name: openstack-rpms
+    description: Openstack YUM repo
+    file: openstack
+    baseurl: "http://{{ reposerver }}/repos/rhel-7-server-openstack-{{ osp_version | default(10) }}-rpms"
+    gpgcheck: no
+    enabled: "{{ openstack_rpms | default('yes') }}"
+  when: reposerver is defined
+
+- name: Add Red Hat openstack director rpms
+  yum_repository:
+    name: openstack-director-rpms
+    description: Openstack director YUM repo
+    file: openstack
+    baseurl: "http://{{ reposerver }}/repos/rhel-7-server-openstack-{{ osp_version | default(10) }}-director-rpms"
+    gpgcheck: no
+    enabled: "{{ openstack_director_rpms | default('yes') }}"
+  when: reposerver is defined
+
+- name: Add Red Hat openstack tools rpms
+  yum_repository:
+    name: openstack-tools-rpms
+    description: Openstack tools YUM repo
+    file: openstack
+    baseurl: "http://{{ reposerver }}/repos/rhel-7-server-openstack-{{ osp_version | default(10) }}-tools-rpms"
+    gpgcheck: no
+    enabled: "{{ openstack_tools_rpms | default('yes') }}"
+  when: reposerver is defined
+
