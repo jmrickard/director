@@ -6,24 +6,16 @@
       name: "{{ req_rpm }}"
       state: latest
 
-      #  - name: set hostname
-      #hostname:
-      #name: "{{ undercloud['hostname'] }}"
+  - name: set hostname
+    hostname:
+      name: "{{ undercloud['hostname'] }}"
 
-      #- name: add line to /etc/hosts as required
-      #lineinfile:
-      #dest: /etc/hosts
-      #state: present
-      #regexp: '^{{ external_ip }}'
-      #line: '{{ external_ip }} {{ fqdn }} {{ fqdn_short }}'
-
-      #  - name: change to ipv4 forward
-      #systctl:
-      #name: net.ipv4.ip_forward
-      #value: 1
-      #sysctl_set: yes
-      #state: present
-      #reload: yes
+  - name: add line to /etc/hosts as required
+    lineinfile:
+      dest: /etc/hosts
+      state: present
+      regexp: '^{{ external_ip }}'
+      line: '{{ external_ip }} {{ fqdn }} {{ fqdn_short }}'
 
 
   - name:  turn off requiretty for sudo

@@ -9,6 +9,10 @@ Requirements
 Role Variables
 --------------
 ---
+```
+
+this is a quick group_vars that can be used for prod/dev. A more indept templated undercloud.conf file can be found in templates/undercloud.conf.j2.test
+
 group_vars
 ```
 under_image: '/home/stack/images/' 
