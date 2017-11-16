@@ -9,6 +9,8 @@ Requirements
 Role Variables
 --------------
 ---
+group_vars
+```
 under_image: '/home/stack/images/' 
 under_host: 'undercloud.redhat.local' 
 ip_add: '192.168.10.28/24'
@@ -37,6 +39,17 @@ ipxe_en: 'True'
 events: 'False' 
 cl_nodes: 'False' 
 under_admin_pass: 'undercloud'
+
+defaults
+stack_user: stack
+stack_group: stack
+stack_passwd: redhat
+sudoer_perm: 0440
+req_rpm: python-tripleoclient,git,mariadb-server
+external_ip: 192.168.5.5
+fqdn: test.osp.redhat.com
+fqdn_short: test.osp
+```
 
 
 Dependencies

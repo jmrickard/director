@@ -25,10 +25,6 @@
       #state: present
       #reload: yes
 
-  - name: start mariadb
-    systemd:
-      name: mariadb
-      state: started
 
   - name:  turn off requiretty for sudo
     lineinfile:
