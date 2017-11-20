@@ -85,10 +85,7 @@ stack_user: stack
 stack_group: stack
 stack_passwd: redhat
 sudoer_perm: 0440
-req_rpm: python-tripleoclient,git,mariadb-server
-external_ip: 192.168.5.5
-fqdn: test.osp.redhat.com
-fqdn_short: test.osp
+req_rpm: python-tripleoclient,git
 ```
 
 
