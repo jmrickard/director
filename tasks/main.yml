@@ -81,6 +81,32 @@
     poll: 50
     changed_when: False
 
+  - name: Unpack introspection images to /home/{{ stack_user }}/images
+    become: yes
+    unarchive:
+      src: "{{ item }}"
+      remote_src: yes
+      dest: "/home/{{ stack_user }}/images"
+      owner: "{{ stack_user }}"
+      group: "{{ stack_group }}"
+      #creates: "/home/{{ stack_user }}/images/overcloud-full.initrd"
+    with_items:
+      - /usr/share/rhosp-director-images/overcloud-full-latest-10.0.tar
+      - /usr/share/rhosp-director-images/ironic-python-agent-latest-10.0.tar
+
+  - name: upload the overcloud images
+    shell: "source /home/stack/stackrc ; openstack overcloud image upload --image-path /home/stack/images/"
+
+  - name: Validate the core endpoints are available
+    uri:
+      url: "{{ item }}"
+      status_code: 200
+    with_items:
+      - https://{{ public_vip }}:13696 #neutron 
+      - https://{{ public_vip }}:13385 #ironic 
+      - https://{{ public_vip }}:13050 #ironic-inspector
+      - https://{{ public_vip }}:13000/v2.0 #keystone
+
   - name: Check openstack catalog list
     shell: openstack catalog list >> catalog.txt
 
