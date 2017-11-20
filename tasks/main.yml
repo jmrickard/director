@@ -8,7 +8,7 @@
 
   - name: set hostname
     hostname:
-      name: "{{ undercloud['hostname'] }}"
+      name: "{{ under_host }}"
 
   - name: add line to /etc/hosts as required
     lineinfile:
@@ -27,9 +27,6 @@
       - { line: "Defaults !requiretty", state: present }
       - { line: "Defaults requiretty", state: absent }
 
-  - name: check sudoers
-    shell: cat /etc/sudoers | grep tty
-    register: sudoers_output
 
   - name: Create the group stack
     group:
@@ -57,21 +54,21 @@
       dest: /etc/sudoers.d/
       mode: "{{ sudoer_perm }}"
 
-  - name: copy the undercloud file
-    copy:
-      src: undercloud.conf
+      # - name: copy the undercloud file
+      #copy:
+      #src: undercloud.conf
+      #dest: /home/stack/undercloud.conf
+      #mode: "{{ sudoer_perm }}"
+      #group: "{{ stack_group }}"
+      #owner: "{{ stack_user }}"
+    
+  - name: Copy over the undercloud file
+    template:
+      src: undercloud.conf.j2
       dest: /home/stack/undercloud.conf
       mode: "{{ sudoer_perm }}"
       group: "{{ stack_group }}"
       owner: "{{ stack_user }}"
-    
-    #- name: Copy over the undercloud file
-    #template:
-    #src: undercloud.conf.j2
-    #dest: /home/stack/undercloud.conf
-    #mode: "{{ sudoer_perm }}"
-    #group: "{{ stack_group }}"
-    #owner: "{{ stack_user }}"
 
   - name: Install the undercloud
     become: yes
@@ -81,7 +78,7 @@
     args:
       chdir: /home/stack/
     async: 2700
-    poll: 30
+    poll: 50
     changed_when: False
 
   - name: Check openstack catalog list

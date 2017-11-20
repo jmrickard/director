@@ -1,0 +1,30 @@
+[DEFAULT]
+image_path = {{ under_image }}
+undercloud_hostname = {{ under_host }}
+local_ip = {{ ip_add }}
+network_gateway = {{ gateway }}
+undercloud_public_vip = {{ public_vip }}
+undercloud_admin_vip = {{ admin_vip }}
+generate_service_certificate = {{ gen_serv_cert }}
+local_interface = {{ local_int }}
+certificate_generate_ca = {{ gen_ca }}
+network_cidr = {{ cidr }}
+masquerade_network = {{ masquerade }}
+dhcp_start = {{ dhcp1 }}
+dhcp_end = {{ dhcp2 }}
+inspection_interface = {{ ins_interface }}
+inspection_iprange = {{ ins_iprange }}
+inspection_runbench = {{ ins_runbench }}
+inspection_enable_uefi = {{ ins_enable_uefi }}
+undercloud_debug = {{ under_debug }}
+enable_tempest = {{ tempest }} 
+enable_mistral = {{ mistral }}
+enable_zaqar = {{ zaqar }}
+enable_telemetry = {{ telemetry }}
+enable_ui = {{ on_ui }}
+enable_validations = {{ en_valid }}
+ipxe_enabled = {{ ipxe_en }}
+store_events = {{ events }}
+clean_nodes = {{ cl_nodes }}
+[auth]
+undercloud_admin_password = {{ under_admin_pass }}

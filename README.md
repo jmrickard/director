@@ -15,8 +15,16 @@ this is a quick group_vars that can be used for prod/dev. A more indept template
 
 group_vars
 ```
-under_image: '/home/stack/images/' 
-under_host: 'undercloud.redhat.local' 
+under_image: '/home/stack/images/'
+under_host: 'undercloud.redhat.local'
+under_host_public: 'undercloud.redhat.public' 
+undercloud_dns: 'undercloud.redhat.dns'
+undercloud_node_dns: 'undercloud.redhat.dns1'
+overcloud_domain_name: 'overcloud.redhat.local'
+external_ip:
+fdqn:
+fdqn_short:
+gen_cert: 'True'
 ip_add: '192.168.10.28/24'
 gateway: '192.168.10.254' 
 public_vip: '132.250.80.28' 
@@ -43,6 +51,34 @@ ipxe_en: 'True'
 events: 'False' 
 cl_nodes: 'False' 
 under_admin_pass: 'undercloud'
+under_glance_pass: 'underglance'
+undercloud_heat_encryption_key: 'key'
+undercloud_heat_pass: 'underheat'
+undercloud_neutron_pass: 'underneutron'
+undercloud_nova_pass: 'undernova'
+undercloud_iron_pass: 'underpass'
+undercloud_ceilometer_pass: 'underceilometer'
+undercloud_aodh_pass: 'underaodh'
+undercloud_sense_pass: 'undersensus'
+undercloud_ceilometer_metering_secret: 'secret'
+undercloud_ceilometer_snmpd_user: 'redhat'
+undercloud_ceilometer_snmpd_pass: 'redhat'
+undercloud_swift_passw: 'redhat'
+undercloud_mistral_passw: 'mistral'
+under_rabbit_cookie: 'cookie'
+undercloud_rabbit_passw: 'rabbitpass'
+undercloud_rabbit_username: 'rabbit'
+undercloud_heat_stack_domain_admin_password: 'heatstackdomain'
+undercloud_swift_hash_suffix: 'suffix'
+
+under_monitoring: 'True'
+novajoin: 'True'
+undercloud_ipa_otp: 'redhat'
+undercloud_docker_registry:
+undercloud_db_password: 'redhat'
+undercloud_admin_token: ''
+
+
 
 defaults
 stack_user: stack
