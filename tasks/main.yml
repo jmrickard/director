@@ -6,29 +6,17 @@
       name: "{{ req_rpm }}"
       state: latest
 
-      #  - name: set hostname
-      #hostname:
-      #name: "{{ undercloud['hostname'] }}"
+  - name: set hostname
+    hostname:
+      name: "{{ under_host }}"
 
-      #- name: add line to /etc/hosts as required
-      #lineinfile:
-      #dest: /etc/hosts
-      #state: present
-      #regexp: '^{{ external_ip }}'
-      #line: '{{ external_ip }} {{ fqdn }} {{ fqdn_short }}'
+  - name: add line to /etc/hosts as required
+    lineinfile:
+      dest: /etc/hosts
+      state: present
+      regexp: '^{{ external_ip }}'
+      line: '{{ external_ip }} {{ fqdn }} {{ fqdn_short }}'
 
-      #  - name: change to ipv4 forward
-      #systctl:
-      #name: net.ipv4.ip_forward
-      #value: 1
-      #sysctl_set: yes
-      #state: present
-      #reload: yes
-
-  - name: start mariadb
-    systemd:
-      name: mariadb
-      state: started
 
   - name:  turn off requiretty for sudo
     lineinfile:
@@ -39,9 +27,6 @@
       - { line: "Defaults !requiretty", state: present }
       - { line: "Defaults requiretty", state: absent }
 
-  - name: check sudoers
-    shell: cat /etc/sudoers | grep tty
-    register: sudoers_output
 
   - name: Create the group stack
     group:
@@ -69,21 +54,21 @@
       dest: /etc/sudoers.d/
       mode: "{{ sudoer_perm }}"
 
-  - name: copy the undercloud file
-    copy:
-      src: undercloud.conf
+      # - name: copy the undercloud file
+      #copy:
+      #src: undercloud.conf
+      #dest: /home/stack/undercloud.conf
+      #mode: "{{ sudoer_perm }}"
+      #group: "{{ stack_group }}"
+      #owner: "{{ stack_user }}"
+    
+  - name: Copy over the undercloud file
+    template:
+      src: undercloud.conf.j2
       dest: /home/stack/undercloud.conf
       mode: "{{ sudoer_perm }}"
       group: "{{ stack_group }}"
       owner: "{{ stack_user }}"
-    
-    #- name: Copy over the undercloud file
-    #template:
-    #src: undercloud.conf.j2
-    #dest: /home/stack/undercloud.conf
-    #mode: "{{ sudoer_perm }}"
-    #group: "{{ stack_group }}"
-    #owner: "{{ stack_user }}"
 
   - name: Install the undercloud
     become: yes
@@ -93,8 +78,34 @@
     args:
       chdir: /home/stack/
     async: 2700
-    poll: 30
+    poll: 50
     changed_when: False
+
+  - name: Unpack introspection images to /home/{{ stack_user }}/images
+    become: yes
+    unarchive:
+      src: "{{ item }}"
+      remote_src: yes
+      dest: "/home/{{ stack_user }}/images"
+      owner: "{{ stack_user }}"
+      group: "{{ stack_group }}"
+      #creates: "/home/{{ stack_user }}/images/overcloud-full.initrd"
+    with_items:
+      - /usr/share/rhosp-director-images/overcloud-full-latest-10.0.tar
+      - /usr/share/rhosp-director-images/ironic-python-agent-latest-10.0.tar
+
+  - name: upload the overcloud images
+    shell: "source /home/stack/stackrc ; openstack overcloud image upload --image-path /home/stack/images/"
+
+  - name: Validate the core endpoints are available
+    uri:
+      url: "{{ item }}"
+      status_code: 200
+    with_items:
+      - https://{{ public_vip }}:13696 #neutron 
+      - https://{{ public_vip }}:13385 #ironic 
+      - https://{{ public_vip }}:13050 #ironic-inspector
+      - https://{{ public_vip }}:13000/v2.0 #keystone
 
   - name: Check openstack catalog list
     shell: openstack catalog list >> catalog.txt
