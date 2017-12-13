@@ -54,14 +54,6 @@
       dest: /etc/sudoers.d/
       mode: "{{ sudoer_perm }}"
 
-      # - name: copy the undercloud file
-      #copy:
-      #src: undercloud.conf
-      #dest: /home/stack/undercloud.conf
-      #mode: "{{ sudoer_perm }}"
-      #group: "{{ stack_group }}"
-      #owner: "{{ stack_user }}"
-    
   - name: Copy over the undercloud file
     template:
       src: undercloud.conf.j2
@@ -106,14 +98,3 @@
       - https://{{ public_vip }}:13385 #ironic 
       - https://{{ public_vip }}:13050 #ironic-inspector
       - https://{{ public_vip }}:13000/v2.0 #keystone
-
-  - name: Check openstack catalog list
-    shell: openstack catalog list >> catalog.txt
-
-  - name: Verify neutron
-    shell: neutron net-list
-
-  - name: Verify neutron 2
-    shell: neutron subnet-list
-
-
