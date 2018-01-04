@@ -6,28 +6,6 @@
       name: "{{ req_rpm }}"
       state: latest
 
-  - name: set hostname
-    hostname:
-      name: "{{ under_host }}"
-
-  - name: add line to /etc/hosts as required
-    lineinfile:
-      dest: /etc/hosts
-      state: present
-      regexp: '^{{ external_ip }}'
-      line: '{{ external_ip }} {{ fqdn }} {{ fqdn_short }}'
-
-
-  - name:  turn off requiretty for sudo
-    lineinfile:
-      dest: /etc/sudoers
-      line: "{{ item.line }}"
-      state: "{{ item.state }}"
-    with_items:
-      - { line: "Defaults !requiretty", state: present }
-      - { line: "Defaults requiretty", state: absent }
-
-
   - name: Create the group stack
     group:
       name: "{{ stack_group }}"
@@ -43,6 +21,7 @@
     file:
       state: directory
       name: "{{ item }}"
+      owner: "{{ stack_user }}"
       group: "{{ stack_group }}"
     with_items:
       - /home/stack/images/
@@ -65,7 +44,7 @@
   - name: Install the undercloud
     become: yes
     become_user: stack
-    command: "openstack undercloud install"
+    command: openstack undercloud install
     register: undercloud_install
     args:
       chdir: /home/stack/
